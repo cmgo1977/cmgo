@@ -1,0 +1,27 @@
+ db:
+  mongodb:
+   mg_name: fry
+   mg_host: 12.0.0.1
+   mg_port: 65783
+   mg_user: fry
+   mg_passwd: 123qwe
+   mg_timeout: 40
+   mg_poollimit: 4096
+
+  postresql:
+   pg_name: fry
+   pg_host: 12.0.0.1
+   pg_port: 65783
+   pg_user: fry
+   pg_passwd: 123qwe
+   pg_network: tcp
+   #TCP host:port or Unix socket depending on Network.
+   pg_addr: 123.0.2.3:2333
+   #Maximum number of socket connections.
+   #Default is 10 connections per every CPU as reported by runtime.NumCPU.
+   pg_poolsize: 20
+
+  redis:
+   rd_host: 12.0.0.1
+   rd_port: 65783
+   rd_passwd: 123qwe
