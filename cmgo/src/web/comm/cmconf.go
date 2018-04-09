@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 )
-
+//
 var configFile []byte
 
 type Conf struct {
