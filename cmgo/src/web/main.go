@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+
 	"web/comm"
+	"web/controller"
 )
 
 func init() {
@@ -10,5 +12,6 @@ func init() {
 }
 
 func main() {
-	fmt.Println(comm.C.Db.Postresql.P_addr)
+	fmt.Println(controller.Register{}.UserRegisterHandle())
+	fmt.Println(comm.RedisSetKey("d","abc"))
 }
