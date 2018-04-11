@@ -25,6 +25,16 @@ type RedisPool struct {
 	Wait         bool                                  //当链接数达到最大后是否阻塞，如果不的话，达到最大后返回错误,如果Wait被设置成true，则Get()方法将会阻塞
 }
 
+/*
+	Redis操作相关
+ */
+
+//测试struct
+type Myuser struct {
+	Name  string
+	Phone string
+}
+
 //初始化redis连接池
 func InitRedisPool() *redis.Pool {
 	return &redis.Pool{
@@ -51,22 +61,86 @@ func InitRedisPool() *redis.Pool {
 	}
 }
 
-func RedisSetKey(key, value string) (ok string) {
+/*
+	设置key的过期时间(秒)
+	result1, err := redisConnect.Do("EXPIRE", key, 30)
+	if err != nil {
+	log.Fatalf("xxx 报错: %s\n", err)
+	return
+ */
+
+//插入key，value
+func RedisSetKey(key, value string) (result string) {
 	redisPool = InitRedisPool()
 	redisConnect := redisPool.Get() //从连接池获取连接
 	defer redisConnect.Close()   //用完后放回连接池
 
 	//redis操作
-	v, err := redisConnect.Do("SET", key, value)
+	result, err := redis.String(redisConnect.Do("SET", key, value))
 	if err != nil {
 		log.Fatalf("Redis > SetKey 报错: %s\n", err)
 		return ""
 	}
-	ok = v.(string) //将空接口转换为string
+	//ok = v.(string) //将空接口转换为string
 
-	return ok //要判断是否返回ok
+	return result //要判断是否返回ok
 }
 
+//根据key查询value
+func RedisGetKey(key string) (result string) {
+	redisPool = InitRedisPool()
+	redisConnect := redisPool.Get() //从连接池获取连接
+	defer redisConnect.Close()   //用完后放回连接池
+
+	//redis操作
+	result, err := redis.String(redisConnect.Do("GET", key))
+	if err != nil {
+		log.Fatalf("Redis > SetKey 报错: %s\n", err)
+		return
+	}
+
+	return result
+}
+
+//累加（每执行一次加1,返回结果数）
+func RedisAccumulation(key string) (result int64) {
+	redisPool = InitRedisPool()
+	redisConnect := redisPool.Get() //从连接池获取连接
+	defer redisConnect.Close()   	//用完后放回连接池
+
+	//redis操作
+	result, err := redis.Int64(redisConnect.Do("INCR", key))
+	if err != nil {
+		log.Fatalf("Redis > SetKey 报错: %s\n", err)
+		return
+	}
+
+	return result
+}
+
+//插入Map
+func RedisSetMap(){
+	redisPool = InitRedisPool()
+	redisConnect := redisPool.Get() //从连接池获取连接
+	defer redisConnect.Close()   	//用完后放回连接池
+
+	user := map[string]*Myuser{
+		"caimin": &Myuser{Name: "caimin", Phone: "13162578783"},
+		"lirui": &Myuser{Name: "lirui", Phone: "18234545454"},
+	}
+
+	//保存Map
+	for sym, row := range user {
+		if _, err := redisConnect.Do("HMSET", redis.Args{sym}.AddFlat(row)...); err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+
+/*
+	Mongodb操作相关
+ */
 func MongodbGetSession() *mgo.Session {
 	if mongodbSession == nil {
 		var err error
@@ -102,3 +176,85 @@ func MongodbGetCollection(c string, sqlHandle func(*mgo.Collection) error) error
 
 	return sqlHandle(collection)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
