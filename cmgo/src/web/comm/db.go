@@ -27,7 +27,7 @@ type RedisPool struct {
 
 /*
 	Redis操作相关
- */
+*/
 
 //测试struct
 type Myuser struct {
@@ -67,21 +67,29 @@ func InitRedisPool() *redis.Pool {
 	if err != nil {
 	log.Fatalf("xxx 报错: %s\n", err)
 	return
- */
+*/
 
 //插入key，value
 func RedisSetKey(key, value string) (result string) {
 	redisPool = InitRedisPool()
 	redisConnect := redisPool.Get() //从连接池获取连接
-	defer redisConnect.Close()   //用完后放回连接池
+	defer redisConnect.Close()      //用完后放回连接池
 
-	//redis操作
-	result, err := redis.String(redisConnect.Do("SET", key, value))
+	//插入，有过期时间
+	result, err := redis.String(redisConnect.Do("SET", key, value, "EX", C.Db.Redis.R_expire))
 	if err != nil {
 		log.Fatalf("Redis > SetKey 报错: %s\n", err)
 		return ""
 	}
 	//ok = v.(string) //将空接口转换为string
+
+	/*插入，不过期
+	result, err := redis.String(redisConnect.Do("SET", key, value))
+	if err != nil {
+		log.Fatalf("Redis > SetKey 报错: %s\n", err)
+		return ""
+	}
+	*/
 
 	return result //要判断是否返回ok
 }
@@ -90,7 +98,7 @@ func RedisSetKey(key, value string) (result string) {
 func RedisGetKey(key string) (result string) {
 	redisPool = InitRedisPool()
 	redisConnect := redisPool.Get() //从连接池获取连接
-	defer redisConnect.Close()   //用完后放回连接池
+	defer redisConnect.Close()      //用完后放回连接池
 
 	//redis操作
 	result, err := redis.String(redisConnect.Do("GET", key))
@@ -106,7 +114,7 @@ func RedisGetKey(key string) (result string) {
 func RedisAccumulation(key string) (result int64) {
 	redisPool = InitRedisPool()
 	redisConnect := redisPool.Get() //从连接池获取连接
-	defer redisConnect.Close()   	//用完后放回连接池
+	defer redisConnect.Close()      //用完后放回连接池
 
 	//redis操作
 	result, err := redis.Int64(redisConnect.Do("INCR", key))
@@ -118,15 +126,66 @@ func RedisAccumulation(key string) (result int64) {
 	return result
 }
 
-//插入Map
-func RedisSetMap(){
+//判断某个key是否存在
+func RedisExitKey(key string)(result bool){
 	redisPool = InitRedisPool()
 	redisConnect := redisPool.Get() //从连接池获取连接
-	defer redisConnect.Close()   	//用完后放回连接池
+	defer redisConnect.Close()      //用完后放回连接池
 
-	user := map[string]*Myuser{
-		"caimin": &Myuser{Name: "caimin", Phone: "13162578783"},
-		"lirui": &Myuser{Name: "lirui", Phone: "18234545454"},
+	//redis操作
+	result, err := redis.Bool(redisConnect.Do("EXISTS", key))
+	if err != nil {
+		log.Fatalf("Redis > SetKey 报错: %s\n", err)
+		return
+	}
+
+	return result
+}
+
+//删除key
+func RedisDeleteKey(key string)(result bool){
+	redisPool = InitRedisPool()
+	redisConnect := redisPool.Get() //从连接池获取连接
+	defer redisConnect.Close()      //用完后放回连接池
+
+	//redis操作
+	result, err := redis.Bool(redisConnect.Do("DEL", key))
+	if err != nil {
+		log.Fatalf("Redis > SetKey 报错: %s\n", err)
+		return
+	}
+
+	return result
+}
+
+//插入json
+//key := "profile"
+//_map := map[string]string{"username": "666", "phonenumber": "888"}
+//value, _ := json.Marshal(_map)
+func RedisSetJson(key string,value string)(result int64){
+	redisPool = InitRedisPool()
+	redisConnect := redisPool.Get() //从连接池获取连接
+	defer redisConnect.Close()      //用完后放回连接池
+
+	//redis操作
+	result, err := redis.Int64(redisConnect.Do("SETNX", key,value))
+	if err != nil {
+		log.Fatalf("Redis > SetKey 报错: %s\n", err)
+		return
+	}
+
+	return result
+}
+
+//批量插入Map
+func RedisSetMap() {
+	redisPool = InitRedisPool()
+	redisConnect := redisPool.Get() //从连接池获取连接
+	defer redisConnect.Close()      //用完后放回连接池
+
+	user := map[string]Myuser{
+		"caimin": Myuser{Name: "caimin", Phone: "13162578783"},
+		"lirui":  Myuser{Name: "lirui", Phone: "18234545454"},
 	}
 
 	//保存Map
@@ -137,10 +196,9 @@ func RedisSetMap(){
 	}
 }
 
-
 /*
 	Mongodb操作相关
- */
+*/
 func MongodbGetSession() *mgo.Session {
 	if mongodbSession == nil {
 		var err error
@@ -176,85 +234,3 @@ func MongodbGetCollection(c string, sqlHandle func(*mgo.Collection) error) error
 
 	return sqlHandle(collection)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

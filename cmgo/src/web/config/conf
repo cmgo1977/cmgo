@@ -25,3 +25,5 @@
   redis:
    rd_host: 127.0.0.1:6379
    rd_passwd: 123qwe
+   #过期时间(秒)
+   rd_expire: 30

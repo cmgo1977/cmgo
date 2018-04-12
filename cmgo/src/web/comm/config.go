@@ -34,8 +34,8 @@ type Conf struct {
 		}
 		Redis struct {
 			R_host   string `yaml:"rd_host"`
-			R_port   string `yaml:"rd_port"`
 			R_passwd string `yaml:"rd_passwd"`
+			R_expire int `yaml:"rd_expire"`
 		}
 	}
 }
