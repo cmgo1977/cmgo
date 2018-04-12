@@ -27,3 +27,10 @@
    rd_passwd: 123qwe
    #过期时间(秒)
    rd_expire: 30
+
+auth:
+  #私钥
+  jwtSecretKey: wxeDA2MAB8si7hOI
+  #过期时间(小时)
+  jwtexpire: 24
+  jwtiss: beeman.com

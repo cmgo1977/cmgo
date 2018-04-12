@@ -5,17 +5,27 @@ import (
 	"log"
 	"time"
 
-	"github.com/garyburd/redigo/redis"
 	"gopkg.in/mgo.v2"
+	"github.com/garyburd/redigo/redis"
 )
 
 var (
+	redisPool *redis.Pool
 	mongodbSession *mgo.Session
 	mongodbDb      *mgo.Database
-
-	redisPool *redis.Pool
 )
 
+/*
+	Redis
+*/
+
+//测试struct
+type Myuser struct {
+	Name  string
+	Phone string
+}
+
+//redis连接池
 type RedisPool struct {
 	Dial         func() (redis.Conn, error)            //Dial 是创建链接的方法
 	TestOnBorrow func(c redis.Conn, t time.Time) error //TestOnBorrow 是一个测试链接可用性的方法
@@ -23,16 +33,6 @@ type RedisPool struct {
 	MaxActive    int                                   //最大的激活连接数，表示同时最多有N个连接 ，为0事表示没有限制
 	IdleTimeout  time.Duration                         //最大的空闲连接等待时间，超过此时间后，空闲连接将被关闭,应该设置一个比redis服务端超时时间更短的时间
 	Wait         bool                                  //当链接数达到最大后是否阻塞，如果不的话，达到最大后返回错误,如果Wait被设置成true，则Get()方法将会阻塞
-}
-
-/*
-	Redis操作相关
-*/
-
-//测试struct
-type Myuser struct {
-	Name  string
-	Phone string
 }
 
 //初始化redis连接池
@@ -127,7 +127,7 @@ func RedisAccumulation(key string) (result int64) {
 }
 
 //判断某个key是否存在
-func RedisExitKey(key string)(result bool){
+func RedisExitKey(key string) (result bool) {
 	redisPool = InitRedisPool()
 	redisConnect := redisPool.Get() //从连接池获取连接
 	defer redisConnect.Close()      //用完后放回连接池
@@ -143,7 +143,7 @@ func RedisExitKey(key string)(result bool){
 }
 
 //删除key
-func RedisDeleteKey(key string)(result bool){
+func RedisDeleteKey(key string) (result bool) {
 	redisPool = InitRedisPool()
 	redisConnect := redisPool.Get() //从连接池获取连接
 	defer redisConnect.Close()      //用完后放回连接池
@@ -162,13 +162,13 @@ func RedisDeleteKey(key string)(result bool){
 //key := "profile"
 //_map := map[string]string{"username": "666", "phonenumber": "888"}
 //value, _ := json.Marshal(_map)
-func RedisSetJson(key string,value string)(result int64){
+func RedisSetJson(key string, value string) (result int64) {
 	redisPool = InitRedisPool()
 	redisConnect := redisPool.Get() //从连接池获取连接
 	defer redisConnect.Close()      //用完后放回连接池
 
 	//redis操作
-	result, err := redis.Int64(redisConnect.Do("SETNX", key,value))
+	result, err := redis.Int64(redisConnect.Do("SETNX", key, value))
 	if err != nil {
 		log.Fatalf("Redis > SetKey 报错: %s\n", err)
 		return
@@ -197,7 +197,7 @@ func RedisSetMap() {
 }
 
 /*
-	Mongodb操作相关
+	Mongodb
 */
 func MongodbGetSession() *mgo.Session {
 	if mongodbSession == nil {
@@ -234,3 +234,7 @@ func MongodbGetCollection(c string, sqlHandle func(*mgo.Collection) error) error
 
 	return sqlHandle(collection)
 }
+
+/*
+	PostgreSQL
+*/

@@ -38,6 +38,11 @@ type Conf struct {
 			R_expire int `yaml:"rd_expire"`
 		}
 	}
+	Auth struct{
+		Jwt_SecretKey string `yaml:"jwtSecretKey"`
+		Jwt_expire int `yaml:"jwtexpire"`
+		Jwt_iss string `yaml:"jwtiss"`
+	}
 }
 
 var C = &Conf{}
