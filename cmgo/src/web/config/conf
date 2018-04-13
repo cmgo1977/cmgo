@@ -1,36 +1,36 @@
  db:
   mongodb:
-   mg_name: bm
-   mg_host: 127.0.0.1
-   mg_port: 27017
-   mg_user: fry
-   mg_passwd: 123qwe
-   mg_timeout: 40
-   mg_poollimit: 4096
-   mg_direct: false
+   mgo_Name: bm
+   mgo_Host: 127.0.0.1
+   mgo_Port: 27017
+   mgo_User: fry
+   mgo_Passwd: 123qwe
+   mgo_TimeOut: 40
+   mgo_PoolLimit: 4096
+   mgo_Direct: false
 
   postresql:
-   pg_name: bm
-   pg_host: 127.0.0.1
-   pg_port: 65783
-   pg_user: fry
-   pg_passwd: 123qwe
-   pg_network: tcp
+   pg_Name: bm
+   pg_Host: 127.0.0.1
+   pg_Port: 65783
+   pg_User: fry
+   pg_Passwd: 123qwe
+   pg_NetWork: tcp
    #TCP host:port or Unix socket depending on Network.
-   pg_addr: 123.0.2.3:2333
+   pg_Addr: 123.0.2.3:2333
    #Maximum number of socket connections.
    #Default is 10 connections per every CPU as reported by runtime.NumCPU.
-   pg_poolsize: 20
+   pg_PoolSize: 20
 
   redis:
-   rd_host: 127.0.0.1:6379
-   rd_passwd: 123qwe
+   redis_Host: 127.0.0.1:6379
+   redis_Passwd: 123qwe
    #过期时间(秒)
-   rd_expire: 30
+   redis_Expire: 30
 
 auth:
   #私钥
-  jwtSecretKey: wxeDA2MAB8si7hOI
+  jwt_SecretKey: wxeDA2MAB8si7hOI
   #过期时间(小时)
-  jwtexpire: 24
-  jwtiss: beeman.com
+  jwt_Expire: 24
+  jwt_ISS: beeman.com

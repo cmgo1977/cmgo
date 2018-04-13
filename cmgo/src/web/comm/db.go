@@ -43,7 +43,7 @@ func InitRedisPool() *redis.Pool {
 		IdleTimeout: 240 * time.Second,
 
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.Dial("tcp", C.Db.Redis.R_host)
+			c, err := redis.Dial("tcp", C.Db.Redis.Host)
 			if err != nil {
 				log.Fatalf("redigo->RedigoPool->redis.Dial()初始化连接池时报错: %s\n", err)
 			}
@@ -76,7 +76,7 @@ func RedisSetKey(key, value string) (result string) {
 	defer redisConnect.Close()      //用完后放回连接池
 
 	//插入，有过期时间
-	result, err := redis.String(redisConnect.Do("SET", key, value, "EX", C.Db.Redis.R_expire))
+	result, err := redis.String(redisConnect.Do("SET", key, value, "EX", C.Db.Redis.Expire))
 	if err != nil {
 		log.Fatalf("Redis > SetKey 报错: %s\n", err)
 		return ""
@@ -204,10 +204,10 @@ func MongodbGetSession() *mgo.Session {
 		var err error
 		//session不存在，就新创建
 		mgoDialInfo := &mgo.DialInfo{
-			Addrs:     []string{C.Db.Mongodb.M_host},
-			Direct:    C.Db.Mongodb.M_direct,
+			Addrs:     []string{C.Db.Mongodb.Host},
+			Direct:    C.Db.Mongodb.Direct,
 			Timeout:   30 * time.Second,
-			PoolLimit: C.Db.Mongodb.M_poollimit,
+			PoolLimit: C.Db.Mongodb.PoolLimit,
 			//Username:  C.Db.Mongodb.M_user,
 			//Password:  C.Db.Mongodb.M_passwd,
 		}
@@ -221,7 +221,7 @@ func MongodbGetSession() *mgo.Session {
 			Eventual: session 的读操作会向任意的其他服务器发起，多次读操作并不一定使用相同的连接，也就是读操作不一定有序。session 的写操作总是向主服务器发起，但是可能使用不同的连接，也就是写操作也不一定有序。
 		*/
 		mongodbSession.SetMode(mgo.Monotonic, true)
-		mongodbDb = mongodbSession.DB(C.Db.Mongodb.M_name) //使用指定数据库
+		mongodbDb = mongodbSession.DB(C.Db.Mongodb.DbName) //使用指定数据库
 	}
 
 	return mongodbSession.Clone()

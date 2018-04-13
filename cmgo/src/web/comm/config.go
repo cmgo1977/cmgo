@@ -6,42 +6,39 @@ import (
 	"log"
 )
 
-//测试
-
-
 type Conf struct {
 	Db struct {
 		Mongodb struct {
-			M_name      string `yaml:"mg_name"`
-			M_host      string `yaml:"mg_host"`
-			M_port      string `yaml:"mg_port"`
-			M_user      string `yaml:"mg_user"`
-			M_passwd    string `yaml:"mg_passwd"`
-			M_timeout   int    `yaml:"mg_timeout"`
-			M_poollimit int    `yaml:"mg_poollimit"`
-			M_direct    bool   `yaml:"mg_direct"`
+			DbName      string `yaml:"mgo_Name"`
+			Host      string `yaml:"mgo_Host"`
+			Port      string `yaml:"mgo_Port"`
+			User      string `yaml:"mgo_User"`
+			Passwd    string `yaml:"mgo_Passwd"`
+			TimeOut   int    `yaml:"mgo_TimeOut"`
+			PoolLimit int    `yaml:"mgo_PoolLimit"`
+			Direct    bool   `yaml:"mgo_Direct"`
 		}
-		Postresql struct {
-			P_name    string `yaml:"pg_name"`
-			P_host    string `yaml:"pg_host"`
-			P_port    string `yaml:"pg_port"`
-			P_user    string `yaml:"pg_user"`
-			P_passwd  string `yaml:"pg_passwd"`
-			P_network string `yaml:"pg_network"`
+		PostgreSql struct {
+			DbName    string `yaml:"pg_Name"`
+			Host    string `yaml:"pg_Host"`
+			Port    string `yaml:"pg_Port"`
+			User    string `yaml:"pg_User"`
+			Passwd  string `yaml:"pg_Passwd"`
+			NetWork string `yaml:"pg_NetWork"`
 			// TCP host:port or Unix socket depending on Network.
-			P_addr     string `yaml:"pg_addr"`
-			P_poolsize int    `yaml:"pg_poolsize"`
+			Addr     string `yaml:"pg_Addr"`
+			PoolSize int    `yaml:"pg_PoolSize"`
 		}
 		Redis struct {
-			R_host   string `yaml:"rd_host"`
-			R_passwd string `yaml:"rd_passwd"`
-			R_expire int `yaml:"rd_expire"`
+			Host   string `yaml:"redis_Host"`
+			Passwd string `yaml:"redis_Passwd"`
+			Expire int `yaml:"redis_Expire"`
 		}
 	}
 	Auth struct{
-		Jwt_SecretKey string `yaml:"jwtSecretKey"`
-		Jwt_expire int `yaml:"jwtexpire"`
-		Jwt_iss string `yaml:"jwtiss"`
+		SecretKey string `yaml:"jwt_SecretKey"`
+		Expire int `yaml:"jwt_Expire"`
+		ISS string `yaml:"jwt_ISS"`
 	}
 }
 
