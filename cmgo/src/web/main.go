@@ -5,6 +5,7 @@ import (
 
 	"web/comm"
 	//"web/controller"
+	"fmt"
 )
 
 func init() {
@@ -24,6 +25,6 @@ func main() {
 	//fmt.Println(b)
 	//fmt.Println(comm.RedisExitKey("cm"))
 
-	//fmt.Println(comm.RedisSetKey("1","caimin"))
-comm.RedisSetMap()
+	fmt.Println(comm.RedisSetKey("aaa","caimin"))
+	comm.RedisSetMap()
 }
